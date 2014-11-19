@@ -1,0 +1,15 @@
+{
+	"log":
+	{
+		"LogPath": "/home/fisherchen/config/",
+		"LogLevel": "2"
+	},
+	"mysql":
+	{
+		"host": "10.1.32.164",
+		"user": "kfc",
+		"pass": "kfc",
+		"db"  : "hardwareMonitor"
+	},
+	"redisIp": "10.1.0.166"
+}
