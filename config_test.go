@@ -1,4 +1,4 @@
-package conf4Fish
+package config
 
 import (
 
@@ -8,15 +8,11 @@ import (
 
 func Test(t *testing.T) {
 
-	conf := SetConfig("./config.json")
-	user :=conf.GetValue("mysql").GetValue("user").ToString()
-	json := `{"user":"name", "testBox": {"test1": "123", "test2": 456}}`
-	buff := []byte(json)
-	jsonConf := ReadJson(buff)
-
-	test := jsonConf.GetValue("testBox").GetValue("test1").ToString()
-
+	json, _ := SetConfig("./config.json")
+	user :=Json(json).GetValue("mysql").GetValue("user").ToString()
+	pass := Json(json).GetValue("mysql").GetValue("pass").ToString()
 
 	fmt.Println(user)
-	fmt.Println(test)
+	fmt.Println(pass)
+
 }

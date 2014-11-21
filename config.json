@@ -1,15 +1,19 @@
 {
-	"log":
-	{
-		"LogPath": "/home/fisherchen/config/",
-		"LogLevel": "2"
-	},
 	"mysql":
 	{
-		"host": "10.1.32.164",
 		"user": "kfc",
 		"pass": "kfc",
-		"db"  : "hardwareMonitor"
+		"db": "MAIL",
+		"ip": "10.1.32.164"
 	},
-	"redisIp": "10.1.0.166"
+	"redis":
+	{
+		"ip": "10.1.0.166",
+		"port": "11502"
+	},
+	"log":
+	{
+		"logPath": "/home/fisherchen/sendRtx/logs/",
+		"logLevel": "2"
+	}
 }

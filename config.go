@@ -1,112 +1,82 @@
-package conf4Fish
+package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"encoding/json"
 	"strconv"
 )
 
-//设置日志类型
-var	filePath string
-
-type Config struct {
+type Js struct {
 	data interface{}
 }
 
-//设置配置文件路径
-func SetConfig (filepath string) *Config {
-
-	filePath = filepath
-
-	c := readList()
-	return c
-}
-
-//读取配置信息列表
-func readList () *Config {
+//设置配置文件
+func SetConfig (filePath string) (string, error) {
 
 	fp, err := os.Open(filePath)
 	if err != nil {
-
-		checkErr(err)
+		return "", err
 	}
-	defer fp.Close()
 
-	buff, err := ioutil.ReadAll(fp)
+	json, err := ioutil.ReadAll(fp)
 	if err != nil {
-
-		checkErr(err)
+		return "", err
 	}
 
+	return string(json), nil
+}
+
+//解析json
+func Json(jsonStr string) *Js {
+
+	j := new(Js)
 	var data interface{}
-	err = json.Unmarshal(buff, &data)
+	err := json.Unmarshal([]byte(jsonStr), &data)
 	if err != nil {
-
-		checkErr(err)
+		return j
 	}
 
-	c := new(Config)
-	c.data = data
-
-	return c
+	j.data = data
+	return j
 }
 
-//支持解析json格式字符串
-func ReadJson(str string) *Config {
+//获取json数据
+func (j *Js) getJson() map[string]interface{} {
 
-	var data interface{}
-	buff := []byte(str)
-	err := json.Unmarshal(buff, &data)
-	if err != nil {
-
-		checkErr(err)
-	}
-
-	c := new(Config)
-	c.data = data
-
-	return c
-}
-
-//读取配置信息
-func (c *Config) GetValue(section string) *Config{
-
-	readList()
-
-	list := c.data.(map[string]interface{})
-	if config, ok := list[section]; ok{
-
-		c.data = config
-		return c
-	}
-	c.data = nil
-	return c
-}
-
-//转换格式
-func (c *Config) ToString() string {
-
-	if m, ok := c.data.(string); ok {
-
+	if m, ok := j.data.(map[string]interface{}); ok {
+	
 		return m
 	}
 
-	if m, ok := c.data.(float64); ok {
-
-		return strconv.FormatFloat(m, 'f', -1, 64)
-	}
-
-	return ""
+	return nil
 }
 
-//错误处理
-func checkErr (err error) string {
+//获取配置值
+func (j *Js) GetValue(key string) *Js {
 
-	if err != nil {
+	m := j.getJson()
+	if v, ok := m[key]; ok {
+	
+		j.data = v
+		return j
+	}
 
-		return fmt.Sprintf("You got a error: %s", err)
+	j.data = nil
+	return j
+}
+
+//转换格式
+func (j *Js) ToString() string {
+
+	if m, ok := j.data.(string); ok {
+	
+		return m
+	}
+
+	if m, ok := j.data.(float64); ok {
+	
+		return strconv.FormatFloat(m, 'f', -1, 64)
 	}
 
 	return ""
